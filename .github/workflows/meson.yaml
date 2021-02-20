@@ -33,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with: 
         name: websocket-chat-backend-main
-        path: ${{runner.workspace}}/build/Websocket-chat
+        path: ${{runner.workspace}}/websocket-chat-backend/build/Websocket-chat
