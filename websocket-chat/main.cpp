@@ -3,6 +3,6 @@
 namespace net = boost::asio;
 namespace beast = boost::beast;
 
-int main() {
-
+int main(int argc, char* argv[]) {
+	
 }
