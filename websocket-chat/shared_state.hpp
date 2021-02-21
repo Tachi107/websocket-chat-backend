@@ -19,7 +19,9 @@ public:
 
 	void send(std::string message) {
 		const auto sharedString {std::make_shared<const std::string>(std::move(message))};
-		
+		for (auto session : _sessions) {
+			session->send(sharedString);
+		}
 	}
 
 	[[nodiscard]] const std::string& documentRoot() const noexcept {
