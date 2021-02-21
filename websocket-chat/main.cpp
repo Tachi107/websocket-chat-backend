@@ -1,11 +1,7 @@
-#include <boost/beast.hpp>
 #include <websocket-chat/http_session.hpp>
 #include <websocket-chat/listener.hpp>
 #include <websocket-chat/shared_state.hpp>
 #include <websocket-chat/websocket_session.hpp>
-
-namespace net = boost::asio;
-namespace beast = boost::beast;
 
 // address, port, documentRoot
 int main(int argc, char* argv[]) {

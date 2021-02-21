@@ -19,7 +19,7 @@ public:
 
 	void send(std::string message) {
 		const auto sharedString {std::make_shared<const std::string>(std::move(message))};
-		for (auto session : _sessions) {
+		for (auto* session : _sessions) {
 			session->send(sharedString);
 		}
 	}
