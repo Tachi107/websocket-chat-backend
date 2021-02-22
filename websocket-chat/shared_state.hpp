@@ -5,9 +5,11 @@
 #include <memory>
 #include <websocket-chat/websocket_session.hpp>
 
+
 class SharedState {
 public:
-	SharedState(std::string_view documentRoot);
+	SharedState(std::string_view documentRoot) 
+		: _documentRoot(documentRoot) {}
 
 	void join(WebsocketSession& session) {
 		_sessions.insert(&session);

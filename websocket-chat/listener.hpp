@@ -1,29 +1,52 @@
 #pragma once
 
 #include <websocket-chat/common.hpp>
-#include <websocket-chat/shared_state.hpp>
-#include <websocket-chat/http_session.hpp>
 #include <memory>
+class SharedState;
+#include <websocket-chat/http_session.hpp>
 #include <iostream>
+
 
 class Listener : public std::enable_shared_from_this<Listener> {
 public:
-	Listener(net::io_context& ioContext, net::ip::tcp::endpoint endpoint, const std::shared_ptr<SharedState>& state) {
+	Listener(net::io_context& ioContext, net::ip::tcp::endpoint endpoint, const std::shared_ptr<SharedState>& state) 
+		: _acceptor(ioContext), _socket(ioContext), _state(state) {
+			beast::error_code errorCode;
+			
+			_acceptor.open(endpoint.protocol(), errorCode);
+			if (errorCode) {
+				fail(errorCode, "_acceptor.open");
+				return;
+			}
 
-	}
+			_acceptor.set_option(net::socket_base::reuse_address(true));
+			if (errorCode) {
+				fail(errorCode, "_acceptor.set_option");
+			}
+
+			_acceptor.bind(endpoint, errorCode);
+			if (errorCode) {
+				fail(errorCode, "_acceptor.bind");
+			}
+
+			_acceptor.listen(net::socket_base::max_listen_connections, errorCode); 
+			if (errorCode) {
+				fail(errorCode, "_acceptor.listen");
+			}
+		}
 
 	void run() {
 		_acceptor.async_accept(
 			_socket,
 			// Per estendere la vita dello shared_ptr che ha chiamato run() devo chiamare shared_from_this()
-			[self = shared_from_this()](boost::system::error_code errorCode) {
+			[self = shared_from_this()](beast::error_code errorCode) {
 				self->onAccept(errorCode);
 			}
 		);
 	}
 
 private:
-	void fail(boost::system::error_code errorCode, const char* what) {
+	void fail(beast::error_code errorCode, const char* what) {
 		// operation_aborted significa che il client ha terminato la connesione
 		if (errorCode == net::error::operation_aborted) {
 			// Per terminare il Listener mi basta chiamare return
@@ -37,7 +60,7 @@ private:
 		std::cerr << what << ": " << errorCode.message() << '\n';
 	}
 
-	void onAccept(boost::system::error_code errorCode) {
+	void onAccept(beast::error_code errorCode) {
 		if (errorCode) {
 			fail(errorCode, "onAccept");
 		}
@@ -54,7 +77,7 @@ private:
 		// creando un loop senza loop
 		_acceptor.async_accept(
 			_socket,
-			[self = shared_from_this()](boost::system::error_code errorCode) {
+			[self = shared_from_this()](beast::error_code errorCode) {
 				self->onAccept(errorCode);
 			}
 		);
