@@ -3,34 +3,25 @@
 #include <string>
 #include <unordered_set>
 #include <memory>
-#include <websocket-chat/websocket_session.hpp>
+#include <mutex>
 
+class WebsocketSession;
 
 class SharedState {
 public:
-	SharedState(std::string_view documentRoot) 
-		: _documentRoot(documentRoot) {}
+	SharedState(std::string_view documentRoot);
 
-	void join(WebsocketSession& session) {
-		_sessions.insert(&session);
-	}
-
-	void leave(WebsocketSession& session) {
-		_sessions.erase(&session);
-	}
-
-	void send(std::string message) {
-		const auto sharedString {std::make_shared<const std::string>(std::move(message))};
-		for (auto* session : _sessions) {
-			session->send(sharedString);
-		}
-	}
+	void join(WebsocketSession* session);
+	void leave(WebsocketSession* session);
+	void send(std::string message);
 
 	[[nodiscard]] const std::string& documentRoot() const noexcept {
 		return _documentRoot;
 	}
 
 private:
-	std::string _documentRoot;
+	const std::string _documentRoot;
+	// Mutex per bloccare lo stato condiviso mentre aggiungo, elimino o invio
+	std::mutex _mutex;
 	std::unordered_set<WebsocketSession*> _sessions;
 };

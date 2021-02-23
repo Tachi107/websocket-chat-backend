@@ -19,12 +19,21 @@ if not meson.is_cross_build()
 	add_project_arguments('-march=native', language: 'cpp')
 endif
 
-src = ['websocket-chat/main.cpp']
+src = [
+	'websocket-chat/main.cpp',
+	'websocket-chat/http_session.cpp',
+	'websocket-chat/listener.cpp',
+	'websocket-chat/shared_state.cpp',
+	'websocket-chat/websocket_session.cpp'
+]
 
 executable(
 	'Websocket-chat',
 	sources: src,
 	include_directories: 'websocket-chat',
-	dependencies: dependency('boost'),
+	dependencies: [
+		dependency('boost'),
+		dependency('threads')
+	],
 	cpp_args: cpp_args
 )
