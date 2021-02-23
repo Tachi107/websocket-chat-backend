@@ -15,10 +15,6 @@ else
 	cpp_args = []
 endif
 
-if not meson.is_cross_build()
-	add_project_arguments('-march=native', language: 'cpp')
-endif
-
 src = [
 	'websocket-chat/main.cpp',
 	'websocket-chat/http_session.cpp',
