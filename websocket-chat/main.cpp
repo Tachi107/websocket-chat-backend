@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 	const net::ip::address address {net::ip::make_address(argv[1])};
 	const unsigned short port = std::atoi(argv[2]);
 	const char* documentRoot {argv[3]};
-	const std::uint32_t threadCount {std::max<uint32_t>(1, std::atoi(argv[4]))};
+	const std::uint32_t threadCount {std::max<std::uint32_t>(1, std::atoi(argv[4]))};
 
 	net::io_context ioContext;
 	
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 		}
 	);
 
-	std::vector<std::jthread> threads;
+	std::vector<std::thread> threads;
 	threads.reserve(threadCount - 1);
 	for (auto i {threadCount - 1}; i > 0; --i) {
 		threads.emplace_back(
@@ -38,4 +38,8 @@ int main(int argc, char* argv[]) {
 		);
 	}
 	ioContext.run();
+
+	for (auto& thread : threads) {
+		thread.join();
+	}
 }

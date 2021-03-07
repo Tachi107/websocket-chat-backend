@@ -34,6 +34,7 @@ private:
 	beast::websocket::stream<net::ip::tcp::socket> _websocketStream; // Contiene stato ws
 	std::shared_ptr<SharedState> _state;
 	std::vector<std::shared_ptr<const std::string>> _messageQueue;
+	std::string username;
 };
 
 template<typename Body, typename Allocator>

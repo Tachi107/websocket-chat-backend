@@ -2,7 +2,7 @@ project(
 	'Websocket-chat-backend',
 	'cpp',
 	default_options: [
-		'cpp_std=c++2a',
+		'cpp_std=c++17',
 		'c_std=c11',
 		'b_ndebug=if-release',
 		'b_lto=true'
@@ -29,7 +29,8 @@ executable(
 	include_directories: 'websocket-chat',
 	dependencies: [
 		dependency('boost'),
-		dependency('threads')
+		dependency('threads'),
+		dependency('simdjson')
 	],
 	cpp_args: cpp_args
 )
