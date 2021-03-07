@@ -3,6 +3,7 @@
 #include <websocket-chat/common.hpp>
 #include <websocket-chat/shared_state.hpp>
 #include <iostream>
+#include <simdjson.h>
 
 class SharedState;
 
@@ -34,7 +35,10 @@ private:
 	beast::websocket::stream<net::ip::tcp::socket> _websocketStream; // Contiene stato ws
 	std::shared_ptr<SharedState> _state;
 	std::vector<std::shared_ptr<const std::string>> _messageQueue;
-	std::string username;
+
+	std::uint64_t _userId;
+	std::uint64_t _groupId;
+	simdjson::dom::parser _jsonParser;
 };
 
 template<typename Body, typename Allocator>

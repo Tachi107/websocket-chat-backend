@@ -14,6 +14,7 @@ public:
 	void join(WebsocketSession* session);
 	void leave(WebsocketSession* session);
 	void send(std::string message);
+	void sendToGroup(std::string message);
 
 	[[nodiscard]] const std::string& documentRoot() const noexcept {
 		return _documentRoot;
@@ -21,7 +22,5 @@ public:
 
 private:
 	const std::string _documentRoot;
-	// Mutex per bloccare lo stato condiviso mentre aggiungo, elimino o invio
-	std::mutex _mutex;
 	std::unordered_set<WebsocketSession*> _sessions;
 };

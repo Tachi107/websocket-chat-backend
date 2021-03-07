@@ -13,3 +13,5 @@ L'ICE è definito come un JSON contenente tre campi, `type` che sarà sempre `ne
 ### Implementazione
 
 Visto che quando un client si connette non può inviare nulla nel body del Websocket upgrade, posso dare un ID arbitrario ad ogni connessione. Dopodiché dovrò chiedere al client di darmi il suo username, oppure potrei prendermelo dalla prima richiesta che il client mi fa, del tipo che il client quando vuole segnalare invia il suo nome, il target e il resto dei dati.
+
+Ogni richiesta contiene nome, gruppo, SDP. Il gruppo è "opzionale" e serve per far inviare il messaggio di segnalazione a più client alla volta.

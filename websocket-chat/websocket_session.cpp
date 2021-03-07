@@ -9,19 +9,19 @@ WebsocketSession::~WebsocketSession() {
 	_state->leave(this);
 }
 
-void WebsocketSession::send(const std::shared_ptr<const std::string>& sharedString) {
-	// Post our work to the strand, this ensures
-	// that the members of `this` will not be
-	// accessed concurrently.
-	net::post(
-		_websocketStream.get_executor(),
-		beast::bind_front_handler(
-			&WebsocketSession::onSend,
-			shared_from_this(),
-			sharedString
-		)
-	);
-}
+//void WebsocketSession::send(const std::shared_ptr<const std::string>& sharedString) {
+//	// Post our work to the strand, this ensures
+//	// that the members of `this` will not be
+//	// accessed concurrently.
+//	net::post(
+//		_websocketStream.get_executor(),
+//		beast::bind_front_handler(
+//			&WebsocketSession::onSend,
+//			shared_from_this(),
+//			sharedString
+//		)
+//	);
+//}
 
 void WebsocketSession::onAccept(beast::error_code errorCode)  {
 	if (errorCode) {
@@ -48,6 +48,12 @@ void WebsocketSession::onRead(beast::error_code errorCode, std::size_t /*bytes*/
 		return fail(errorCode, "onRead");
 	}
 	else {
+		//simdjson::dom::element parsed {_jsonParser.parse(beast::buffers_to_string(_buffer.data()))};
+		//_userId = parsed["user-id"];
+		//_groupId = parsed["group-id"];
+
+		//_state.sendToUser(userId, message);
+		//_state.sendToGroup(groupId, message);
 		// Invia il messaggio a tutti i partecipanti
 		_state->send(beast::buffers_to_string(_buffer.data()));
 		// Una volta usato, svuoto il buffer
@@ -83,7 +89,7 @@ void WebsocketSession::onWrite(beast::error_code errorCode, std::size_t /*bytes*
 	}
 }
 
-void WebsocketSession::onSend(const std::shared_ptr<const std::string>& sharedString) {
+void WebsocketSession::send(const std::shared_ptr<const std::string>& sharedString) {
 	// Metto il messaggio in coda
 	_messageQueue.push_back(sharedString);
 	// Controllo se sto già inviando qualcosa a qualcuno,
